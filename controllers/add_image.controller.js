@@ -7,6 +7,8 @@ const prisma = new PrismaClient();
 const imagekit = require('../libs/imagekit')
 const validateFile = require('../libs/multer');
 
+const validateImageData = require('../validation/image_data.validation');
+
 router.post('/', async (req, res, next) => {
     try {
         const file = req.file;
@@ -20,15 +22,24 @@ router.post('/', async (req, res, next) => {
             file: stringFile,
         })
 
-        const {
-            title,
-            description
-        } = req.body
+        const imageData = {
+            title: req.body.title,
+            description: req.body.description
+        }
+
+        const response = validateImageData(imageData);
+
+        if(response.error){
+            throw {
+                statusCode: 400,
+                message: response.error.details
+            }
+        }
 
         const image = await prisma.image.create({
             data: {
-                title: title,
-                description: description,
+                title: imageData.title,
+                description: imageData.description,
                 image_url: uploadFile.url,
                 image_field_id: uploadFile.fileId
             }

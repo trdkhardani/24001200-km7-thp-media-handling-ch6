@@ -7,6 +7,8 @@ const prisma = new PrismaClient();
 const imagekit = require('../libs/imagekit')
 const validateFile = require('../libs/multer');
 
+const validateImageData = require('../validation/image_data.validation');
+
 router.patch('/:id', async (req, res, next) => {
     const imageId = Number(req.params.id)
 
@@ -49,18 +51,27 @@ router.patch('/:id', async (req, res, next) => {
             }
         }
 
-        const {
-            title,
-            description
-        } = req.body
+        const newImageData = {
+            title: req.body.title,
+            description: req.body.description
+        }
+
+        const response = validateImageData(newImageData);
+
+        if(response.error){
+            throw {
+                statusCode: 400,
+                message: response.error.details
+            }
+        }
 
         const image = await prisma.image.update({
             where: {
                 id: imageId
             },
             data: {
-                title: title,
-                description: description,
+                title: newImageData.title,
+                description: newImageData.description,
                 image_url: imageFileDetails.image_url,
                 image_field_id: imageFileDetails.image_field_id
             }

@@ -4,6 +4,10 @@ const validateFile = (file) => {
     const maxFileSize = 2 * 1024 * 1024;
     const allowideFileTypes = ['image/jpeg', 'image/jpg', 'image/png']
 
+    if(!file){ // if no image uploaded or provided
+        throw new Error('Image field is required')
+    }
+
     if(!allowideFileTypes.includes(file.mimetype)){
         throw new Error("Please upload only jpg, jpeg, or png")
     }
