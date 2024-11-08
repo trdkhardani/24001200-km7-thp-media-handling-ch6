@@ -11,17 +11,6 @@ const validateImageData = require('../validation/image_data.validation');
 
 router.post('/', async (req, res, next) => {
     try {
-        const file = req.file;
-
-        validateFile(file)
-
-        const stringFile = file.buffer.toString('base64');
-
-        const uploadFile = await imagekit.upload({
-            fileName: file.originalname,
-            file: stringFile,
-        })
-
         const imageData = {
             title: req.body.title,
             description: req.body.description
@@ -35,6 +24,18 @@ router.post('/', async (req, res, next) => {
                 message: response.error.details
             }
         }
+        
+        const file = req.file;
+
+        validateFile(file)
+
+        const stringFile = file.buffer.toString('base64');
+
+        const uploadFile = await imagekit.upload({
+            fileName: file.originalname,
+            file: stringFile,
+        })
+
 
         const image = await prisma.image.create({
             data: {

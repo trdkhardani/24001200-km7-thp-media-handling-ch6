@@ -31,6 +31,20 @@ router.patch('/:id', async (req, res, next) => {
             image_field_id: oldImageData.image_field_id
         }
 
+        const newImageData = {
+            title: req.body.title,
+            description: req.body.description
+        }
+
+        const response = validateImageData(newImageData);
+
+        if(response.error){
+            throw {
+                statusCode: 400,
+                message: response.error.details
+            }
+        }
+
         const file = req.file;
         
         if(file){ // if there's file input or upload request. this block will be ignored if there's no file input or upload
@@ -48,20 +62,6 @@ router.patch('/:id', async (req, res, next) => {
             imageFileDetails = { // change imageFileDetails object properties to uploaded file or image
                 image_url: uploadFile.url,
                 image_field_id: uploadFile.fileId
-            }
-        }
-
-        const newImageData = {
-            title: req.body.title,
-            description: req.body.description
-        }
-
-        const response = validateImageData(newImageData);
-
-        if(response.error){
-            throw {
-                statusCode: 400,
-                message: response.error.details
             }
         }
 
