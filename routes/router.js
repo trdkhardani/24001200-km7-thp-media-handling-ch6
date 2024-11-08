@@ -6,6 +6,7 @@ const multer = require('multer')();
 const addImage = require('../controllers/add_image.controller')
 const getAllImages = require('../controllers/get_all_images.controller')
 const getSingleImage = require('../controllers/get_single_image.controller')
+const deleteImage = require('../controllers/delete_image.controller')
 
 app.get('/', (req, res, next) => {
     res.json({
@@ -17,5 +18,6 @@ app.get('/', (req, res, next) => {
 app.use('/add-image', multer.single('image'), addImage)
 app.use('/get-all-images', getAllImages)
 app.use('/get-image', getSingleImage)
+app.use('/delete-image', deleteImage)
 
 module.exports = app;
